@@ -1,0 +1,62 @@
+---
+title: "Untitled"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(janitor)
+library(stringr)
+library(forcats)
+library(viridis)
+library(plotly)
+library(tidytext)
+theme_set(theme_bw())
+theme_update(legend.position = "bottom")
+
+```
+
+```{r}
+set.seed(1)
+
+NYC_restaurant_data = read_csv("DOHMH_New_York_City_Restaurant_Inspection_Results.csv.gz", col_types = cols(building = col_character()),
+                           na = c("NA", "N/A")) %>%
+  filter(grade %in% c("A", "B", "C")) %>% 
+  mutate(inspection_num = row_number(),
+         boro = str_to_title(boro)) %>% 
+  filter(boro !="Missing") %>% 
+  select(inspection_num, boro, grade, score, critical_flag, dba, cuisine_description,   zipcode, violation_description)
+
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+
+```
+
+### Chart C
+
+```{r}
+NYC_restaurant_data %>% 
+  count(boro) %>% 
+  mutate(boro = fct_reorder(boro, n)) %>% 
+  plot_ly(y = ~n, color = ~boro, type = "bar")
+```
+
