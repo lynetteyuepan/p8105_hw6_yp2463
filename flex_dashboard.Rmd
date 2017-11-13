@@ -39,7 +39,7 @@ Column {data-width=650}
 ### Chart A
 
 ```{r}
-
+# make a box plot; x = cuisine_descirption; y= score
 ```
 
 Column {data-width=350}
@@ -48,12 +48,13 @@ Column {data-width=350}
 ### Chart B
 
 ```{r}
-
+# sentiment analysis of restaurant reviews. 
 ```
 
 ### Chart C
 
 ```{r}
+## histrogram of the number of restaurants in each boro
 NYC_restaurant_data %>% 
   count(boro) %>% 
   mutate(boro = fct_reorder(boro, n)) %>% 
