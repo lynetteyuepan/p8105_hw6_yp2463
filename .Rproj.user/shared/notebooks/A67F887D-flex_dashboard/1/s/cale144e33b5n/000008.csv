@@ -1,4 +1,0 @@
-"0","NYC_restaurant_data %>% "
-"0","  count(boro) %>% "
-"0","  mutate(boro = fct_reorder(boro, n)) %>% "
-"0","  plot_ly(y = ~n, color = ~boro, type = ""bar"")"
