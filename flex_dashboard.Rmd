@@ -29,7 +29,7 @@ NYC_restaurant_data = read_csv("DOHMH_New_York_City_Restaurant_Inspection_Result
   mutate(inspection_num = row_number(),
          boro = str_to_title(boro)) %>% 
   filter(boro !="Missing") %>% 
-  select(inspection_num, boro, grade, score, critical_flag, dba, cuisine_description,   zipcode, violation_description)
+  select(inspection_num, boro, grade, score, critical_flag, dba, cuisine_description,   zipcode, violation_description, inspection_date)
 
 ```
 
@@ -48,7 +48,11 @@ Column {data-width=350}
 ### Chart B
 
 ```{r}
-# sentiment analysis of restaurant reviews. 
+# density plot that shows the number of rows for each inspection date
+NYC_restaurant_data %>% 
+  plot_ly(x = ~inspection, y = ~n, color = ~neighbourhood, type = "bar")
+
+
 ```
 
 ### Chart C
