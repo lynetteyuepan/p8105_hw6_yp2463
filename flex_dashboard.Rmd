@@ -84,10 +84,15 @@ Column {data-width=350}
 ### Chart B
 
 ```{r, echo=FALSE}
-# density plot that shows the number of rows for each inspection date
-#NYC_restaurant_data %>% 
-  #plot_ly(x = ~inspection, y = ~n, color = ~neighbourhood, type = "bar")
-
+# plot that shows the number of rows for each inspection date
+NYC_restaurant_data %>% 
+  separate(inspection_date, into=c("year","month","day", sep="-")) %>% 
+  mutate(month = month.abb[as.numeric(month)]) %>% 
+  select(inspection_num:month) %>% 
+  unite(year_month, c(year, month), sep = "-", remove=FALSE) %>% 
+  count(year_month) %>% 
+  plot_ly(x = ~year_month, y = ~n, type="scatter", mode = "lines") %>% 
+  layout(title = "The number of restaurants that were spected for each inspection date", xaxis = list(type="number of restaurants"))
 
 ```
 
