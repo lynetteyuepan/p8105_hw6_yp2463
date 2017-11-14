@@ -1,9 +1,12 @@
 ---
-title: "Untitled"
+title: "p8105_hw6_jh3909"
+author: "Jingxuan He(UNI: jh3909),
+         Yue Pan (UNI: )" 
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
-    vertical_layout: fill
+    orientation: rows
+    social: menu
+    source_code: embed
 ---
 
 ```{r setup, include=FALSE}
@@ -16,9 +19,14 @@ library(viridis)
 library(plotly)
 library(tidytext)
 theme_set(theme_bw())
-theme_update(legend.position = "bottom")
 
+# Make some noisily increasing data
+set.seed(955)
+dat <- data.frame(cond = rep(c("A", "B"), each=10),
+                  xvar = 1:20 + rnorm(20,sd=3),
+                  yvar = 1:20 + rnorm(20,sd=3))
 ```
+
 
 ```{r}
 set.seed(1)
@@ -33,35 +41,45 @@ NYC_restaurant_data = read_csv("DOHMH_New_York_City_Restaurant_Inspection_Result
 
 ```
 
-Column {data-width=650}
+
+Row
 -----------------------------------------------------------------------
 
 ### Chart A
-
-```{r}
-# make a box plot; x = cuisine_descirption; y= score
-```
-
-Column {data-width=350}
------------------------------------------------------------------------
-
-### Chart B
-
-```{r}
-# density plot that shows the number of rows for each inspection date
-NYC_restaurant_data %>% 
-  plot_ly(x = ~inspection, y = ~n, color = ~neighbourhood, type = "bar")
-
-
-```
-
-### Chart C
 
 ```{r}
 ## histrogram of the number of restaurants in each boro
 NYC_restaurant_data %>% 
   count(boro) %>% 
   mutate(boro = fct_reorder(boro, n)) %>% 
-  plot_ly(y = ~n, color = ~boro, type = "bar")
+  plot_ly(y = ~n, color = ~boro, type = "bar") %>%
+  layout(xaxis = list(title = "Boro"), yaxis = list(title = "Count"))
 ```
+
+### Chart B
+
+```{r}
+# make a box plot; x = cuisine_descirption; y= score
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Chart C
+
+```{r}
+# density plot that shows the number of rows for each inspection date
+# NYC_restaurant_data %>% 
+  # plot_ly(x = ~inspection, y = ~n, color = ~neighbourhood, type = "bar")
+
+
+```
+
+### Chart D
+
+```{r}
+# Sentiment Plot
+```
+
+
 
