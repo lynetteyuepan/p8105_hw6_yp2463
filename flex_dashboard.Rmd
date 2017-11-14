@@ -7,6 +7,7 @@ output:
     orientation: rows
     social: menu
     source_code: embed
+  runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
@@ -18,6 +19,7 @@ library(forcats)
 library(viridis)
 library(plotly)
 library(tidytext)
+library(shiny)
 theme_set(theme_bw())
 
 # Make some noisily increasing data
@@ -28,7 +30,7 @@ dat <- data.frame(cond = rep(c("A", "B"), each=10),
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 set.seed(1)
 
 NYC_restaurant_data = read_csv("DOHMH_New_York_City_Restaurant_Inspection_Results.csv.gz", col_types = cols(building = col_character()),
@@ -39,15 +41,59 @@ NYC_restaurant_data = read_csv("DOHMH_New_York_City_Restaurant_Inspection_Result
   filter(boro !="Missing") %>% 
   select(inspection_num, boro, grade, score, critical_flag, dba, cuisine_description,   zipcode, violation_description, inspection_date)
 
+
+# Sentiment plot
+inspection_words = NYC_restaurant_data %>% 
+  unnest_tokens(word, violation_description)
+
+data(stop_words)
+
+inspection_words = 
+  anti_join(inspection_words, stop_words)
+
+bing_sentiments = get_sentiments("bing")
+
+inspection_sentiments = inspection_words %>% 
+  inner_join(., bing_sentiments) %>% 
+  count(inspection_num, sentiment) %>% 
+  spread(sentiment, n, fill = 0) %>% 
+  mutate(sentiment = positive - negative) %>% 
+  select(inspection_num, sentiment)
+
+inspection_sentiments = 
+  right_join(NYC_restaurant_data, inspection_sentiments, 
+             by = "inspection_num")
 ```
 
+geom_point
+=======================================================================
 
-Row
+
+Column {data-width=650}
 -----------------------------------------------------------------------
 
 ### Chart A
 
-```{r}
+```{r, echo=FALSE}
+# make a box plot; x = cuisine_descirption; y= score
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r, echo=FALSE}
+# density plot that shows the number of rows for each inspection date
+#NYC_restaurant_data %>% 
+  #plot_ly(x = ~inspection, y = ~n, color = ~neighbourhood, type = "bar")
+
+
+```
+
+### Chart C
+
+```{r, echo=FALSE}
 ## histrogram of the number of restaurants in each boro
 NYC_restaurant_data %>% 
   count(boro) %>% 
@@ -56,30 +102,34 @@ NYC_restaurant_data %>%
   layout(xaxis = list(title = "Boro"), yaxis = list(title = "Count"))
 ```
 
-### Chart B
+Shiny Sentiment plot
+=======================================================================
 
-```{r}
-# make a box plot; x = cuisine_descirption; y= score
-```
-
-Row
+Column {.sidebar}
 -----------------------------------------------------------------------
+```{r, echo=FALSE}
+boros = NYC_restaurant_data %>% distinct(boro) %>% pull()
 
-### Chart C
-
-```{r}
-# density plot that shows the number of rows for each inspection date
-# NYC_restaurant_data %>% 
-  # plot_ly(x = ~inspection, y = ~n, color = ~neighbourhood, type = "bar")
-
-
+selectInput("boro_choice", label = h3("Select boro"),
+            choices = boros, selected = "Manhattan")
 ```
 
 ### Chart D
 
-```{r}
-# Sentiment Plot
+```{r, echo=FALSE}
+renderPlotly({
+  inspection_sentiments %>% 
+  filter(boro == input$boro_choice) %>% 
+  sample_n(400) %>% 
+  mutate(inspection_num = factor(inspection_num),
+    inspection_num = fct_reorder(inspection_num, sentiment)) %>% 
+  ggplot(aes(x = inspection_num, 
+             y = sentiment, fill = grade, color = grade)) + 
+  geom_bar(stat = "identity") + 
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  scale_fill_viridis(discrete = TRUE) + 
+  scale_color_viridis(discrete = TRUE) 
+})
 ```
-
-
-
