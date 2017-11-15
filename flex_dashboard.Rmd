@@ -41,7 +41,6 @@ NYC_restaurant_data = read_csv("DOHMH_New_York_City_Restaurant_Inspection_Result
   filter(boro !="Missing") %>% 
   select(inspection_num, boro, grade, score, critical_flag, dba, cuisine_description,   zipcode, violation_description, inspection_date)
 
-
 # Sentiment plot
 inspection_words = NYC_restaurant_data %>% 
   unnest_tokens(word, violation_description)
@@ -75,15 +74,6 @@ Column {data-width=650}
 ### Chart A
 
 ```{r, echo=FALSE}
-# make a box plot; x = cuisine_descirption; y= score
-```
-
-Column {data-width=350}
------------------------------------------------------------------------
-
-### Chart B
-
-```{r, echo=FALSE}
 # plot that shows the number of rows for each inspection date
 NYC_restaurant_data %>% 
   separate(inspection_date, into=c("year","month","day", sep="-")) %>% 
@@ -93,7 +83,18 @@ NYC_restaurant_data %>%
   count(year_month) %>% 
   plot_ly(x = ~year_month, y = ~n, type="scatter", mode = "lines") %>% 
   layout(title = "The number of restaurants that were spected for each inspection date", xaxis = list(type="number of restaurants"))
+```
 
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r, echo=FALSE}
+# make a box plot; x = cuisine_descirption; y= score
+NYC_restaurant_data %>%
+  plot_ly(x = ~cuisine_description, y = ~ score, color = ~cuisine_description, type = "box", colors = "Set2") %>%
+  layout(showlegend = FALSE)
 ```
 
 ### Chart C
@@ -115,16 +116,26 @@ Column {.sidebar}
 ```{r, echo=FALSE}
 boros = NYC_restaurant_data %>% distinct(boro) %>% pull()
 
+
 selectInput("boro_choice", label = h3("Select boro"),
             choices = boros, selected = "Manhattan")
+
+grade_choice = NYC_restaurant_data %>% distinct(grade) %>% pull()
+
+radioButtons("grade_choice", label = h3("Choose grade"),
+    choices = grade_choice, 
+    selected = "A")
 ```
 
+Row
+-----------------------------------------------------------------------
 ### Chart D
 
 ```{r, echo=FALSE}
 renderPlotly({
   inspection_sentiments %>% 
-  filter(boro == input$boro_choice) %>% 
+  filter(boro == input$boro_choice,
+         grade == input$grade_choice) %>% 
   sample_n(400) %>% 
   mutate(inspection_num = factor(inspection_num),
     inspection_num = fct_reorder(inspection_num, sentiment)) %>% 
