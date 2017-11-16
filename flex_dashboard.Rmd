@@ -1,7 +1,7 @@
 ---
 title: "p8105_hw6_jh3909"
 author: "Jingxuan He(UNI: jh3909),
-         Yue Pan (UNI: )" 
+         Yue Pan (UNI:yp2463 )" 
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
@@ -71,24 +71,26 @@ geom_point
 Column {data-width=650}
 -----------------------------------------------------------------------
 
-### Chart A
+### Plot that shows the number of rows for each inspection date
 
 ```{r, echo=FALSE}
-# plot that shows the number of rows for each inspection date
+
 NYC_restaurant_data %>% 
   separate(inspection_date, into=c("year","month","day", sep="-")) %>% 
   mutate(month = month.abb[as.numeric(month)]) %>% 
   select(inspection_num:month) %>% 
   unite(year_month, c(year, month), sep = "-", remove=FALSE) %>% 
   count(year_month) %>% 
-  plot_ly(x = ~year_month, y = ~n, type="scatter", mode = "lines") %>% 
+  plot_ly(x = ~year_month, y = ~n, type="scatter", mode = "lines", hoverinfo="text",
+          text= ~paste("Number of restaurants: ", n,
+                       "\n Date of inspection: ", year_month)) %>% 
   layout(title = "The number of restaurants that were spected for each inspection date", xaxis = list(type="number of restaurants"))
 ```
 
 Column {data-width=350}
 -----------------------------------------------------------------------
 
-### Chart B
+### Boxplot showing the scores of restaurants for each type of cuisine
 
 ```{r, echo=FALSE}
 # make a box plot; x = cuisine_descirption; y= score
@@ -97,14 +99,15 @@ NYC_restaurant_data %>%
   layout(showlegend = FALSE)
 ```
 
-### Chart C
+### The number of restaurants in each boro
 
 ```{r, echo=FALSE}
-## histrogram of the number of restaurants in each boro
+
 NYC_restaurant_data %>% 
   count(boro) %>% 
   mutate(boro = fct_reorder(boro, n)) %>% 
-  plot_ly(y = ~n, color = ~boro, type = "bar") %>%
+  plot_ly(y = ~n, color = ~boro, type = "bar", hoverinfo="text",
+          text=~paste("Number of restaurants: ", n)) %>%
   layout(xaxis = list(title = "Boro"), yaxis = list(title = "Count"))
 ```
 
@@ -129,7 +132,7 @@ radioButtons("grade_choice", label = h3("Choose grade"),
 
 Row
 -----------------------------------------------------------------------
-### Chart D
+### Sentiment scores for each restaurant
 
 ```{r, echo=FALSE}
 renderPlotly({
