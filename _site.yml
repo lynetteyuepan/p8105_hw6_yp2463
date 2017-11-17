@@ -4,7 +4,7 @@ navbar:
   title: "Home"
   right:
     - text: "Flex_dashboard"
-      href: https://lynettepan.shinyapps.io/flex_dashboard/
+      href: https://lynettepan.shinyapps.io/p8105_hw6_yp2463/#section-geom_point
     - icon: fa-github fa-lg
       href: https://github.com/lynetteyuepan/p8105_hw6_yp2463/
 output:
