@@ -1,0 +1,12 @@
+name: flex_dashboard
+title: flex_dashboard
+username:
+account: lynettepan
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 235953
+bundleId: 1080335
+url: https://lynettepan.shinyapps.io/flex_dashboard/
+when: 1510889159.81926
+asMultiple: FALSE
+asStatic: FALSE
