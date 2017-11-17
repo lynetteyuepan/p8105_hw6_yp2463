@@ -21,12 +21,6 @@ library(plotly)
 library(tidytext)
 library(shiny)
 theme_set(theme_bw())
-
-# Make some noisily increasing data
-set.seed(955)
-dat <- data.frame(cond = rep(c("A", "B"), each=10),
-                  xvar = 1:20 + rnorm(20,sd=3),
-                  yvar = 1:20 + rnorm(20,sd=3))
 ```
 
 

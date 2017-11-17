@@ -4,7 +4,9 @@ title: "NYC restaurants inspection"
 
 ### About this flex_dashboard
 
-This `flexdashboard` with Shiny was made for [Jeff Goldsmith's Data Science I class](http://jeffgoldsmith.com/DSI/index.html) in the Department of Biostatistics at Columbia University. The data come from [NYC restaurants inspection](https://dev.socrata.com/foundry/data.cityofnewyork.us/9w7m-hzhe), which provides Airbnb data from different cities, and this dashboard focuses on NYC. Download the data used for this app [here](http://jeffgoldsmith.com/DSI/dataset_restaurant_inspections.html).
+- This `flexdashboard` with Shiny was made for [Jeff Goldsmith's Data Science I class](http://jeffgoldsmith.com/DSI/index.html) in the Department of Biostatistics at Columbia University. The data come from [NYC restaurants inspection](https://dev.socrata.com/foundry/data.cityofnewyork.us/9w7m-hzhe), which provides Airbnb data from different cities, and this dashboard focuses on NYC. Download the data used for this app [here](http://jeffgoldsmith.com/DSI/dataset_restaurant_inspections.html).
 
-Short introduction: The New York City Department of Health and Mental Hygiene (DOHMH) conducts unannounced restaurant inspections on an annual basis in order to check for compliance with policies on food handling, food temperature, personal hygiene of restaurant workers, and vermin control. Regulation violations are each worth a pre-specified number of points, which are totaled at the end of the inspection. Scores are converted into grades, where a lower score earns a higher grade. However, we have shrinked the original dataset to smaller size due to the limitation of the shinyapp.io. 
+- Data Description: The New York City Department of Health and Mental Hygiene (DOHMH) conducts unannounced restaurant inspections on an annual basis in order to check for compliance with policies on food handling, food temperature, personal hygiene of restaurant workers, and vermin control. Regulation violations are each worth a pre-specified number of points, which are totaled at the end of the inspection. Scores are converted into grades, where a lower score earns a higher grade.
+
+- Data Processing: We firstly 
 
