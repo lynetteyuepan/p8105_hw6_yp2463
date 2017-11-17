@@ -26,6 +26,16 @@ theme_set(theme_bw())
 
 ```{r, echo=FALSE}
 set.seed(1)
+# How the data was cleaned and shrinked:
+# NYC_restaurant_data = read_csv("DOHMH_New_York_City_Restaurant_Inspection_Results.csv.gz", col_types = cols(building = col_character()),
+#                            na = c("NA", "N/A")) %>%
+#   filter(grade %in% c("A", "B", "C")) %>% 
+#   mutate(inspection_num = row_number(),
+#          boro = str_to_title(boro)) %>% 
+#   filter(boro !="Missing") %>% 
+#   select(inspection_num, boro, grade, score, cuisine_description, violation_description, inspection_date)
+# NYC_restaurant_data = NYC_restaurant_data[sample(nrow(NYC_restaurant_data,5000),]
+# write.csv(NYC_restaurant_data, "NYC_restaurant_data.csv")
 
 # Use the shrinked dataset
 NYC_restaurant_data = read_csv("NYC_restaurant_data.csv")
