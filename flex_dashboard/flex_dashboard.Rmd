@@ -25,16 +25,16 @@ theme_set(theme_bw())
 
 
 ```{r, echo=FALSE}
-set.seed(1)
-# How the data was cleaned and shrinked:
+# set.seed(1)
+# # How the data was cleaned and shrinked:
 # NYC_restaurant_data = read_csv("DOHMH_New_York_City_Restaurant_Inspection_Results.csv.gz", col_types = cols(building = col_character()),
 #                            na = c("NA", "N/A")) %>%
-#   filter(grade %in% c("A", "B", "C")) %>% 
+#   filter(grade %in% c("A", "B", "C")) %>%
 #   mutate(inspection_num = row_number(),
-#          boro = str_to_title(boro)) %>% 
-#   filter(boro !="Missing") %>% 
+#          boro = str_to_title(boro)) %>%
+#   filter(boro !="Missing") %>%
 #   select(inspection_num, boro, grade, score, cuisine_description, violation_description, inspection_date)
-# NYC_restaurant_data = NYC_restaurant_data[sample(nrow(NYC_restaurant_data,5000),]
+# NYC_restaurant_data = NYC_restaurant_data[sample(nrow(NYC_restaurant_data,10000),]
 # write.csv(NYC_restaurant_data, "NYC_restaurant_data.csv")
 
 # Use the shrinked dataset
@@ -61,92 +61,4 @@ inspection_sentiments = inspection_words %>%
 inspection_sentiments = 
   right_join(NYC_restaurant_data, inspection_sentiments, 
              by = "inspection_num")
-```
-
-geom_point
-=======================================================================
-
-
-Column {data-width=650}
------------------------------------------------------------------------
-
-### Plot that shows the number of rows for each inspection date
-
-```{r, echo=FALSE}
-
-NYC_restaurant_data %>% 
-  separate(inspection_date, into=c("year","month","day", sep="-")) %>% 
-  mutate(month = month.abb[as.numeric(month)]) %>% 
-  select(inspection_num:month) %>% 
-  unite(year_month, c(year, month), sep = "-", remove=FALSE) %>% 
-  count(year_month) %>% 
-  plot_ly(x = ~year_month, y = ~n, type="scatter", mode = "lines", hoverinfo="text",
-          text= ~paste("Number of restaurants: ", n,
-                       "\n Date of inspection: ", year_month)) %>% 
-  layout(title = "The number of restaurants that were spected for each inspection date", xaxis = list(type="number of restaurants"))
-```
-
-Column {data-width=350}
------------------------------------------------------------------------
-
-### Boxplot showing the scores of restaurants for each type of cuisine
-
-```{r, echo=FALSE}
-# make a box plot; x = cuisine_descirption; y= score
-NYC_restaurant_data %>%
-  plot_ly(x = ~cuisine_description, y = ~ score, color = ~cuisine_description, type = "box", colors = "Set2") %>%
-  layout(showlegend = FALSE)
-```
-
-### The number of restaurants in each boro
-
-```{r, echo=FALSE}
-
-NYC_restaurant_data %>% 
-  count(boro) %>% 
-  mutate(boro = fct_reorder(boro, n)) %>% 
-  plot_ly(y = ~n, color = ~boro, type = "bar", hoverinfo="text",
-          text=~paste("Number of restaurants: ", n)) %>%
-  layout(xaxis = list(title = "Boro"), yaxis = list(title = "Count"))
-```
-
-Shiny Sentiment plot
-=======================================================================
-
-Column {.sidebar}
------------------------------------------------------------------------
-```{r, echo=FALSE}
-boros = NYC_restaurant_data %>% distinct(boro) %>% pull()
-
-
-selectInput("boro_choice", label = h3("Select boro"),
-            choices = boros, selected = "Manhattan")
-
-grade_choice = NYC_restaurant_data %>% distinct(grade) %>% pull()
-
-radioButtons("grade_choice", label = h3("Choose grade"),
-    choices = grade_choice, 
-    selected = "A")
-```
-
-Row
------------------------------------------------------------------------
-### Sentiment scores for each restaurant
-
-```{r, echo=FALSE}
-renderPlotly({
-  inspection_sentiments %>% 
-  filter(boro == input$boro_choice,
-         grade == input$grade_choice) %>% 
-  mutate(inspection_num = factor(inspection_num),
-    inspection_num = fct_reorder(inspection_num, sentiment)) %>% 
-  ggplot(aes(x = inspection_num, 
-             y = sentiment, fill = grade, color = grade)) + 
-  geom_bar(stat = "identity") + 
-  theme(axis.title.x = element_blank(),
-        axis.text.x = element_blank(),
-        axis.ticks.x = element_blank()) +
-  scale_fill_viridis(discrete = TRUE) + 
-  scale_color_viridis(discrete = TRUE) 
-})
 ```
